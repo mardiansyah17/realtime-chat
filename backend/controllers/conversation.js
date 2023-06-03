@@ -40,13 +40,15 @@ exports.getAllConversation = async (req, res) => {
   return res.json(conversations);
 };
 exports.getConversation = async (req, res) => {
+  const { conversationId } = req.query;
   const messages = await prisma.conversation.findUnique({
     where: {
-      id: req.body.conversationId,
+      id: parseInt(conversationId),
     },
     select: {
       messages: true,
     },
   });
+  console.log(messages);
   return res.json(messages);
 };

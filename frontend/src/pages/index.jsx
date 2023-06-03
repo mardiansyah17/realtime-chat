@@ -78,7 +78,7 @@ export const getServerSideProps = async (context) => {
           },
         })
         .then((res) => res.data)
-    : undefined;
+    : null;
   return {
     props: {
       conversations,

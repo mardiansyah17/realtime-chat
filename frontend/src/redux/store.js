@@ -2,8 +2,10 @@ import { combineReducers } from "redux";
 import userReducer from "./userReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
+import messageReducer from "./messageReducer";
 const reducer = combineReducers({
   user: userReducer,
+  messages: messageReducer,
 });
 
 // create a makeStore function

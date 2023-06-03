@@ -1,15 +1,52 @@
 const prisma = require("../db");
 
 exports.getAllConversation = async (req, res) => {
-  const user = await prisma.user.findUniqueOrThrow({
+  const { email } = req.auth.user;
+
+  const user = await prisma.user.findUnique({
     where: {
-      email: req.auth.user.email,
+      email,
     },
     include: {
-      conversationsOne: true,
-      conversationsTwo: true,
+      conversations_one: {
+        select: {
+          id: true,
+          user_id_two: true,
+        },
+      },
+      conversations_two: {
+        select: {
+          id: true,
+          user_id_one: true,
+        },
+      },
     },
   });
-  return res.json(user);
-  res.send("mantap bro");
+  const conversations = user.conversations_one
+    .map((data) => {
+      return {
+        conversationId: data.id,
+        user: data.user_id_two,
+      };
+    })
+    .concat(
+      user.conversations_two.map((data) => {
+        return {
+          conversationId: data.id,
+          user: data.user_id_one,
+        };
+      })
+    );
+  return res.json(conversations);
+};
+exports.getConversation = async (req, res) => {
+  const messages = await prisma.conversation.findUnique({
+    where: {
+      id: req.body.conversationId,
+    },
+    select: {
+      messages: true,
+    },
+  });
+  return res.json(messages);
 };

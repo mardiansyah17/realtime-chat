@@ -12,30 +12,28 @@ model User {
   name        String        @db.VarChar(50)
   email       String        @unique @db.VarChar(70)
   picture     String        @db.VarChar(255)
- participants Participant[]
+  conversations_one Conversation[] @relation("conversations_one")
+  conversations_two Conversation[] @relation("conversations_two")
+messages Message[]
+  
   @@map("users")
 }
 
-model Conversation {
-  id         Int    @id @default(autoincrement())
-  message Message[]
-  participants Participant[]
- @@map("conversations") 
+model Conversation{
+  id Int @id @default(autoincrement())
+user_one Int
+user_id_one User @relation("conversations_one",fields: [user_one],references: [id])
+user_two Int
+user_id_two User @relation("conversations_two",fields: [user_two],references: [id])
+messages Message[]
+@@map("conversations")
 }
-
-model Participant{
-  id Int @id
-  user User @relation(fields: [userId],references: [id])
-  userId Int 
-  conversation Conversation @relation(fields: [conversationId],references: [id]) 
-  conversationId Int
-  @@map("participants")
-}
-
 model Message{
-  id Int @id
-  message String @db.VarChar(500)
+  id Int @id @default(autoincrement())
+  content String @db.Text()
   sender Int
-  sender_id Conversation @relation(fields: [sender],references: [id])
+  sender_id User @relation(fields: [id],references: [id])
+  conversation Int
+  conversation_id Conversation @relation(fields: [conversation],references: [id])
   @@map("messages")
 }

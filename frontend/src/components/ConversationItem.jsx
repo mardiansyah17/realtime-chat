@@ -4,6 +4,7 @@ import React from "react";
 import { BiDotsHorizontal, BiDotsVertical, BiExit, BiLogIn } from "react-icons/bi";
 import { useDispatch } from "react-redux";
 export default function ConversationItem({ conversation, token }) {
+  const { conversationId } = conversation;
   const dispatch = useDispatch();
   const getConversation = async () => {
     await axios
@@ -12,11 +13,17 @@ export default function ConversationItem({ conversation, token }) {
           Authorization: `Bearer ${token}`,
         },
         params: {
-          conversationId: conversation.conversationId,
+          conversationId,
         },
       })
       .then((data) => {
-        dispatch({ type: "SET_CONVERSATION", payload: data.data });
+        dispatch({
+          type: "SET_CONVERSATION",
+          payload: {
+            conversationId,
+            messages: data.data.messages,
+          },
+        });
         console.log(data.data);
       });
   };

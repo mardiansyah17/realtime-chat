@@ -1,7 +1,15 @@
-const messageReducer = (state = null, action) => {
+const initialState = {
+  conversationId: null,
+  messages: [],
+};
+const messageReducer = (state = initialState, action) => {
   switch (action.type) {
     case "SET_CONVERSATION":
-      return (state = action.payload.messages);
+      const { conversationId, messages } = action.payload;
+      return (state = {
+        conversationId,
+        messages,
+      });
 
     default:
       return state;

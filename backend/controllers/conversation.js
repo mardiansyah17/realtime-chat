@@ -1,6 +1,7 @@
 const prisma = require("../db");
 
 exports.getAllConversation = async (req, res) => {
+  console.log("first");
   const { email } = req.auth;
 
   const user = await prisma.user.findUnique({

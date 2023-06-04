@@ -8,10 +8,14 @@ import BubleChat from "@/components/BubleChat";
 import ChatInput from "@/components/ChatInput";
 import axios from "axios";
 import { API_URL } from "@/contstant";
+import Conversation from "@/components/Conversation";
 const socket = io("http://localhost:5000", { autoConnect: false });
 const inter = Inter({ subsets: ["latin"] });
 export default function Home({ conversations, token }) {
-  const { user, messages } = useSelector((state) => state);
+  const selector = useSelector((state) => state);
+  const user = selector.user;
+  const messages = selector.messages.messages;
+  const conversationId = selector.messages.conversationId;
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -24,40 +28,25 @@ export default function Home({ conversations, token }) {
       msg: "mantap",
     });
   };
-
   return (
     <div className={`${inter.className} md:flex md:w-full h-screen max-h-screen overflow-hidden`}>
       <Sidebar conversations={conversations} token={token} />
       <div className="w-full  h-full">
         <HeaderMobile />
-        <div className=" h-[93%] md:h-full flex flex-col">
-          <div className="p-3 basis-[90%] ">
-            {user && messages ? (
-              <>
-                {messages.map((data, id) => {
-                  console.log(data);
-                  return (
-                    <BubleChat key={id} msg={data.content} userChat={data.email == user.email} />
-                  );
-                })}
-              </>
-            ) : (
-              ""
-            )}
-          </div>
-          <ChatInput
-            msgOnChange={(val) => setMessage(val.target.value)}
-            handleMsg={handleMsg}
-            message={message}
-          />
-        </div>
+        {user && conversationId ? (
+          <>
+            <Conversation handleMsg={handleMsg} />
+          </>
+        ) : (
+          <h1>tidak ada</h1>
+        )}
       </div>
     </div>
   );
 }
 
 export const getServerSideProps = async (context) => {
-  const token = context.req.cookies.auth_token;
+  const token = context.req.cookies.auth_token || null;
   const conversations = token
     ? await axios
         .get(`${API_URL}/conversation/get-all-conversations`, {

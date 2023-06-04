@@ -13,12 +13,7 @@ export default function Conversation({ socket }) {
     },
   ]);
   const [message, setMessage] = useState("");
-  useEffect(() => {
-    socket.on("newMessage", (data) => {
-      console.log(data);
-      setMessages((state) => [...state, data]);
-    });
-  }, []);
+  useEffect(() => {}, []);
 
   const handleMsg = async () => {
     // return console.log(message);
@@ -37,6 +32,7 @@ export default function Conversation({ socket }) {
       <div className="p-3 basis-[90%] ">
         {user ? (
           <>
+            {console.log(user)}
             {messages.map((data, id) => {
               return <BubleChat key={id} msg={data.message} userChat={data.email == user.email} />;
             })}

@@ -8,10 +8,12 @@ datasource db {
 }
 
 model User {
-  id          Int           @id @default(autoincrement())
+  id          String           @id  @default(uuid())
   name        String        @db.VarChar(50)
   email       String        @unique @db.VarChar(70)
   picture     String        @db.VarChar(255)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   conversations_one Conversation[] @relation("conversations_one")
   conversations_two Conversation[] @relation("conversations_two")
 messages Message[]
@@ -20,20 +22,24 @@ messages Message[]
 }
 
 model Conversation{
-  id Int @id @default(autoincrement())
-user_one Int
+  id String @id @default(uuid())
+    createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+user_one String
 user_id_one User @relation("conversations_one",fields: [user_one],references: [id])
-user_two Int
+user_two String
 user_id_two User @relation("conversations_two",fields: [user_two],references: [id])
 messages Message[]
 @@map("conversations")
 }
 model Message{
-  id Int @id @default(autoincrement())
+  id String @id @default(uuid())
   content String @db.Text()
-  sender Int
-  sender_id User @relation(fields: [id],references: [id])
-  conversation Int
+  sender String
+    createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  sender_id User @relation(fields: [sender],references: [id])
+  conversation String
   conversation_id Conversation @relation(fields: [conversation],references: [id])
   @@map("messages")
 }

@@ -19,10 +19,9 @@ function MyApp({ Component, ...rest }) {
 
 MyApp.getInitialProps = async ({ ctx }) => {
   const token = ctx.req.cookies.auth_token;
-
   return {
     props: {
-      user: token ? await jwtDecode(token).user : null,
+      user: token ? await jwtDecode(token) : null,
     },
   };
 };

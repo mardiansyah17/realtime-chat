@@ -7,10 +7,10 @@ import { HiPlus, HiXMark } from "react-icons/hi2";
 import { BiDotsHorizontal, BiDotsVertical, BiExit, BiLogIn } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import ConversationItem from "./ConversationItem";
-export default function Sidebar({ conversations }) {
+export default function Sidebar({ conversations, token }) {
   const { isOpen, onClose } = useSidebar();
   const router = useRouter();
-  const { user, messages } = useSelector((state) => state);
+  const { user } = useSelector((state) => state);
   return (
     <div
       className={`z-10 flex top-0 h-screen md:relative  fixed ease-in-out duration-500 ${
@@ -20,7 +20,7 @@ export default function Sidebar({ conversations }) {
       <div className={`  w-80 h-full   bg-white border-r border-gray-300 `}>
         <div
           onClick={() => {
-            console.log(messages);
+            // console.log(messages);
           }}
           className="flex items-center space-x-3 mt-3 border border-green-400 rounded-md w-[90%] mb-3 mx-auto py-2 px-3"
         >
@@ -31,7 +31,11 @@ export default function Sidebar({ conversations }) {
           {conversations &&
             conversations.map((conversation) => {
               return (
-                <ConversationItem key={conversation.conversationId} conversation={conversation} />
+                <ConversationItem
+                  key={conversation.conversationId}
+                  conversation={conversation}
+                  token={token}
+                />
               );
             })}
         </ul>

@@ -26,9 +26,9 @@ router.get(
         picture,
       },
     });
-    const token = jwt.sign({ user: { email, name, picture } }, process.env.JWT_SECRET_KEY);
+    const token = jwt.sign(user, process.env.JWT_SECRET_KEY);
     res.cookie("auth_token", token, {
-      // httpOnly: true,
+      httpOnly: true,
       maxAge: 2 * 60 * 60 * 1000,
     });
     return res.redirect("http://localhost:3000");

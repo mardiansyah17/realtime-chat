@@ -3,6 +3,7 @@ import userReducer from "./userReducer";
 import { configureStore } from "@reduxjs/toolkit";
 import { createWrapper } from "next-redux-wrapper";
 import messageReducer from "./messageReducer";
+import Cookies from "js-cookie";
 const reducer = combineReducers({
   user: userReducer,
   messages: messageReducer,

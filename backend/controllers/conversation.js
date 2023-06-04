@@ -1,7 +1,7 @@
 const prisma = require("../db");
 
 exports.getAllConversation = async (req, res) => {
-  const { email } = req.auth.user;
+  const { email } = req.auth;
 
   const user = await prisma.user.findUnique({
     where: {
@@ -37,18 +37,17 @@ exports.getAllConversation = async (req, res) => {
         };
       })
     );
-  return res.json(conversations);
+  return res.json({ conversations });
 };
 exports.getConversation = async (req, res) => {
   const { conversationId } = req.query;
   const messages = await prisma.conversation.findUnique({
     where: {
-      id: parseInt(conversationId),
+      id: conversationId,
     },
     select: {
       messages: true,
     },
   });
-  console.log(messages);
   return res.json(messages);
 };

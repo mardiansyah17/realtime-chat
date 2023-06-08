@@ -25,21 +25,21 @@ model Conversation{
   id String @id @default(uuid())
     createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-user_one String
-user_id_one User @relation("conversations_one",fields: [user_one],references: [id])
-user_two String
-user_id_two User @relation("conversations_two",fields: [user_two],references: [id])
+user_id_one String
+user_one User @relation("conversations_one",fields: [user_id_one],references: [id])
+user_id_two String
+user_two User @relation("conversations_two",fields: [user_id_two],references: [id])
 messages Message[]
 @@map("conversations")
 }
 model Message{
   id String @id @default(uuid())
   content String @db.Text()
-  sender String
+  sender_id String
     createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  sender_id User @relation(fields: [sender],references: [id])
-  conversation String
-  conversation_id Conversation @relation(fields: [conversation],references: [id])
+  sender User @relation(fields: [sender_id],references: [id])
+  conversation_id String
+  conversation Conversation @relation(fields: [conversation_id],references: [id])
   @@map("messages")
 }

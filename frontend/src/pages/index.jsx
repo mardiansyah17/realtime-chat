@@ -3,9 +3,7 @@ import HeaderMobile from "@/components/HeaderMobile";
 import Sidebar from "@/components/Sidebar";
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import BubleChat from "@/components/BubleChat";
-import ChatInput from "@/components/ChatInput";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { API_URL } from "@/contstant";
 import Conversation from "@/components/Conversation";
@@ -14,28 +12,46 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home({ conversations, token }) {
   const selector = useSelector((state) => state);
   const user = selector.user;
-  const messages = selector.messages.messages;
   const conversationId = selector.messages.conversationId;
   const [message, setMessage] = useState("");
-
+  const dispatch = useDispatch();
   useEffect(() => {
-    socket.connect();
+    if (!socket.connected) {
+      socket.connect();
+    }
+    console.log("first");
+    socket.on("reciveMessage", (message) => {
+      dispatch({
+        type: "ADD_MESSAGE",
+        payload: {
+          message,
+        },
+      });
+    });
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const handleMsg = async (e) => {
     e.preventDefault();
     socket.emit("message", {
-      msg: "mantap",
+      content: message,
+      sender_id: user.id,
+      conversation_id: conversationId,
     });
   };
   return (
     <div className={`${inter.className} md:flex md:w-full h-screen max-h-screen overflow-hidden`}>
-      <Sidebar conversations={conversations} token={token} />
+      <Sidebar conversations={conversations} socket={socket} token={token} />
       <div className="w-full  h-full">
         <HeaderMobile />
         {user && conversationId ? (
           <>
-            <Conversation handleMsg={handleMsg} />
+            <Conversation
+              msgOnChange={(val) => setMessage(val.target.value)}
+              handleMsg={handleMsg}
+            />
           </>
         ) : (
           <h1>tidak ada</h1>

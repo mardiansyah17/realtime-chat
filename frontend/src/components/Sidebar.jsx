@@ -7,7 +7,7 @@ import { HiPlus, HiXMark } from "react-icons/hi2";
 import { BiDotsHorizontal, BiDotsVertical, BiExit, BiLogIn } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import ConversationItem from "./ConversationItem";
-export default function Sidebar({ conversations, token }) {
+export default function Sidebar({ conversations, token, socket }) {
   const { isOpen, onClose } = useSidebar();
   const router = useRouter();
   const { user } = useSelector((state) => state);
@@ -35,6 +35,7 @@ export default function Sidebar({ conversations, token }) {
                   key={conversation.conversationId}
                   conversation={conversation}
                   token={token}
+                  socket={socket}
                 />
               );
             })}

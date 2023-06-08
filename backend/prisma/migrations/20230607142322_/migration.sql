@@ -16,8 +16,8 @@ CREATE TABLE `conversations` (
     `id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `user_one` VARCHAR(191) NOT NULL,
-    `user_two` VARCHAR(191) NOT NULL,
+    `user_id_one` VARCHAR(191) NOT NULL,
+    `user_id_two` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -26,22 +26,22 @@ CREATE TABLE `conversations` (
 CREATE TABLE `messages` (
     `id` VARCHAR(191) NOT NULL,
     `content` TEXT NOT NULL,
-    `sender` VARCHAR(191) NOT NULL,
+    `sender_id` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
-    `conversation` VARCHAR(191) NOT NULL,
+    `conversation_id` VARCHAR(191) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `conversations` ADD CONSTRAINT `conversations_user_one_fkey` FOREIGN KEY (`user_one`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `conversations` ADD CONSTRAINT `conversations_user_id_one_fkey` FOREIGN KEY (`user_id_one`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `conversations` ADD CONSTRAINT `conversations_user_two_fkey` FOREIGN KEY (`user_two`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `conversations` ADD CONSTRAINT `conversations_user_id_two_fkey` FOREIGN KEY (`user_id_two`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `messages` ADD CONSTRAINT `messages_sender_fkey` FOREIGN KEY (`sender`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `messages` ADD CONSTRAINT `messages_sender_id_fkey` FOREIGN KEY (`sender_id`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `messages` ADD CONSTRAINT `messages_conversation_fkey` FOREIGN KEY (`conversation`) REFERENCES `conversations`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `messages` ADD CONSTRAINT `messages_conversation_id_fkey` FOREIGN KEY (`conversation_id`) REFERENCES `conversations`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

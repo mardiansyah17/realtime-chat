@@ -1,10 +1,13 @@
 import { API_URL } from "@/contstant";
+import useSidebar from "@/hooks/useSidebar";
 import axios from "axios";
 import React from "react";
 import { BiDotsHorizontal, BiDotsVertical, BiExit, BiLogIn } from "react-icons/bi";
 import { useDispatch } from "react-redux";
-export default function ConversationItem({ conversation, token }) {
-  const { conversationId } = conversation;
+export default function ConversationItem({ conversation, token, socket }) {
+  const { conversationId, user } = conversation;
+  const { isOpen, onClose } = useSidebar();
+
   const dispatch = useDispatch();
   const getConversation = async () => {
     await axios
@@ -21,10 +24,12 @@ export default function ConversationItem({ conversation, token }) {
           type: "SET_CONVERSATION",
           payload: {
             conversationId,
+            user,
             messages: data.data.messages,
           },
         });
-        console.log(data.data);
+        onClose();
+        socket.emit("join", conversationId);
       });
   };
   return (

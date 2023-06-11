@@ -3,30 +3,55 @@ import HeaderMobile from "@/components/HeaderMobile";
 import Sidebar from "@/components/Sidebar";
 import { io } from "socket.io-client";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { API_URL } from "@/contstant";
 import Conversation from "@/components/Conversation";
+import { wrapper } from "@/redux/store";
+import { addUser } from "@/redux/userSlice";
+import { setConversations, setLastMessage } from "@/redux/conversationSlice";
+import { addMessages } from "@/redux/messagesSlice";
+import Modal from "@/components/Modal";
 const socket = io("http://localhost:5000", { autoConnect: false });
 const inter = Inter({ subsets: ["latin"] });
-export default function Home({ conversations, token }) {
+
+export const getServerSideProps = wrapper.getServerSideProps((store) => async ({ req, res }) => {
+  const token = req.cookies.auth_token || null;
+  const conversations = token
+    ? await axios
+        .get(`${API_URL}/conversation/get-all-conversations`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => res.data.conversations)
+    : null;
+  store.dispatch(setConversations(conversations));
+  return {
+    props: {
+      token,
+    },
+  };
+});
+
+function Home({ token }) {
   const selector = useSelector((state) => state);
   const user = selector.user;
   const conversationId = selector.messages.conversationId;
+
   const [message, setMessage] = useState("");
   const dispatch = useDispatch();
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
     }
-    console.log("first");
     socket.on("reciveMessage", (message) => {
-      dispatch({
-        type: "ADD_MESSAGE",
-        payload: {
-          message,
-        },
-      });
+      const { createdAt, content, conversation_id } = message;
+
+      dispatch(setLastMessage({ createdAt, content, conversationId: conversation_id }));
+      if (conversationId) {
+        dispatch(addMessages(message));
+      }
     });
     return () => {
       socket.disconnect();
@@ -40,15 +65,18 @@ export default function Home({ conversations, token }) {
       sender_id: user.id,
       conversation_id: conversationId,
     });
+    setMessage("");
   };
   return (
     <div className={`${inter.className} md:flex md:w-full h-screen max-h-screen overflow-hidden`}>
-      <Sidebar conversations={conversations} socket={socket} token={token} />
-      <div className="w-full  h-full">
+      <Modal token={token} />
+      <Sidebar socket={socket} token={token} />
+      <div className="w-full h-full">
         <HeaderMobile />
         {user && conversationId ? (
           <>
             <Conversation
+              msgVal={message}
               msgOnChange={(val) => setMessage(val.target.value)}
               handleMsg={handleMsg}
             />
@@ -61,21 +89,4 @@ export default function Home({ conversations, token }) {
   );
 }
 
-export const getServerSideProps = async (context) => {
-  const token = context.req.cookies.auth_token || null;
-  const conversations = token
-    ? await axios
-        .get(`${API_URL}/conversation/get-all-conversations`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((res) => res.data.conversations)
-    : null;
-  return {
-    props: {
-      conversations,
-      token,
-    },
-  };
-};
+export default connect((state) => state)(Home);

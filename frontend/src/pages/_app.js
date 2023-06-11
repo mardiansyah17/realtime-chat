@@ -1,29 +1,24 @@
 import { wrapper } from "@/redux/store";
+import { setUser } from "@/redux/userSlice";
 import "@/styles/globals.css";
+import Cookies from "js-cookie";
 import jwtDecode from "jwt-decode";
-import { Provider, useDispatch, useSelector } from "react-redux";
-
-function MyApp({ Component, ...rest }) {
-  const { user } = rest.props;
-  // const dispatch = useDispatch();
-  // dispatch({ type: "SET_USER", payload: user });
-  const { store, props } = wrapper.useWrappedStore(rest);
-  store.dispatch({ type: "SET_USER", payload: user });
+import { Provider } from "react-redux";
+const App = ({ Component, ...rest }) => {
+  const { props, store } = wrapper.useWrappedStore(rest);
   const { pageProps } = props;
   return (
     <Provider store={store}>
-      <Component {...pageProps} />
+      <Component {...pageProps} />;
     </Provider>
   );
-}
-
-MyApp.getInitialProps = async ({ ctx }) => {
-  const token = ctx.req.cookies.auth_token;
-  return {
-    props: {
-      user: token ? await jwtDecode(token) : null,
-    },
-  };
 };
 
-export default MyApp;
+App.getInitialProps = wrapper.getInitialAppProps((store) => (ctx) => {
+  const token = ctx.ctx.req.cookies.auth_token || null;
+  if (token) {
+    store.dispatch(setUser(jwtDecode(token)));
+  }
+});
+
+export default App;

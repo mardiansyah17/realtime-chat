@@ -7,10 +7,10 @@ export default function HeaderMobile() {
   const selector = useSelector((state) => state);
   const user = selector.messages.user;
   return (
-    <div className="flex items-center justify-between px-3 border-b border-b-gray-200 shadow-sm p-3 md:hidden">
+    <div className="flex items-center justify-between p-3 px-3 border-b shadow-sm border-b-gray-200 md:hidden">
       <FaBars size={20} onClick={onOpen} />
       <span>{user ? user.name : ""}</span>
-      <FaPlus size={20} className="text-green-500" onClick={() => console.log("first")} />
+      <FaPlus size={20} className="text-green-500" />
     </div>
   );
 }

@@ -32,9 +32,17 @@ user_two User @relation("conversations_two",fields: [user_id_two],references: [i
 messages Message[]
 @@map("conversations")
 }
+
+enum Status {
+  read
+  sent
+  not_sent
+}
+
 model Message{
   id String @id @default(uuid())
   content String @db.Text()
+  status Status @default(not_sent)
   sender_id String
     createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

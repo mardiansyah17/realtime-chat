@@ -15,21 +15,39 @@ exports.getAllConversation = async (req, res) => {
         select: {
           id: true,
           user_two: true,
+          messages: {
+            take: 1,
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
         },
       },
       conversations_two: {
         select: {
           id: true,
           user_one: true,
+          messages: {
+            take: 1,
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
         },
       },
     },
   });
+
+  if (!user) return res.status(400).json({ msg: "ada yang tidak beres" });
   const conversations = user.conversations_one
     .map((data) => {
       return {
         conversationId: data.id,
         user: data.user_two,
+        lastMessage: {
+          message: data.messages[0].content,
+          createdAt: data.messages[0].createdAt,
+        },
       };
     })
     .concat(
@@ -37,9 +55,28 @@ exports.getAllConversation = async (req, res) => {
         return {
           conversationId: data.id,
           user: data.user_one,
+          lastMessage: {
+            message: data.messages[0].content,
+            createdAt: data.messages[0].createdAt,
+          },
         };
       })
-    );
+    )
+    .sort((a, b) => {
+      return a.lastMessage.createdAt > b.lastMessage.createdAt
+        ? -1
+        : a.lastMessage.createdAt < b.lastMessage.createdAt
+        ? 1
+        : 0;
+    })
+    .map((data) => {
+      const { conversationId, lastMessage, user } = data;
+      return {
+        conversationId,
+        lastMessage: { createdAt: lastMessage.createdAt, content: lastMessage.message },
+        user,
+      };
+    });
   return res.json({ conversations });
 };
 exports.getConversation = async (req, res) => {

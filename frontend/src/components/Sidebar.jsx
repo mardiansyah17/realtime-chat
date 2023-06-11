@@ -7,10 +7,15 @@ import { HiPlus, HiXMark } from "react-icons/hi2";
 import { BiDotsHorizontal, BiDotsVertical, BiExit, BiLogIn } from "react-icons/bi";
 import { useSelector } from "react-redux";
 import ConversationItem from "./ConversationItem";
-export default function Sidebar({ conversations, token, socket }) {
+import FlipMove from "react-flip-move";
+import useModal from "@/hooks/useModal";
+export default function Sidebar({ token, socket }) {
   const { isOpen, onClose } = useSidebar();
+  const { onOpen } = useModal();
   const router = useRouter();
-  const { user } = useSelector((state) => state);
+  const selector = useSelector((state) => state);
+  const user = selector.user;
+  const conversations = selector.conversations;
   return (
     <div
       className={`z-10 flex top-0 h-screen md:relative  fixed ease-in-out duration-500 ${
@@ -19,15 +24,13 @@ export default function Sidebar({ conversations, token, socket }) {
     >
       <div className={`  w-80 h-full   bg-white border-r border-gray-300 `}>
         <div
-          onClick={() => {
-            // console.log(messages);
-          }}
+          onClick={() => onOpen()}
           className="flex items-center space-x-3 mt-3 border border-green-400 rounded-md w-[90%] mb-3 mx-auto py-2 px-3"
         >
           <HiPlus />
           <span>New chat</span>
         </div>
-        <ul className=" h-[80%] p-3">
+        <FlipMove className=" h-[80%] p-3">
           {conversations &&
             conversations.map((conversation) => {
               return (
@@ -39,7 +42,20 @@ export default function Sidebar({ conversations, token, socket }) {
                 />
               );
             })}
-        </ul>
+        </FlipMove>
+        {/* <ul className=" h-[80%] p-3">
+          {conversations &&
+            conversations.map((conversation) => {
+              return (
+                <ConversationItem
+                  key={conversation.conversationId}
+                  conversation={conversation}
+                  token={token}
+                  socket={socket}
+                />
+              );
+            })}
+        </ul> */}
         <div className="flex items-center h-[10%] justify-between px-3 border-t border-t-green-500">
           {user ? (
             <>

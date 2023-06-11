@@ -18,6 +18,7 @@ app.use(morgan("dev"));
 
 app.use("/login", require("./routes/auth"));
 app.use("/api/conversation", require("./routes/conversation"));
+app.use("/api/user", require("./routes/user"));
 app.use(errorHandler);
 
 http.listen(port, () => {

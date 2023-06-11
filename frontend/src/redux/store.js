@@ -1,18 +1,32 @@
-import { combineReducers } from "redux";
-import userReducer from "./userReducer";
-import { configureStore } from "@reduxjs/toolkit";
-import { createWrapper } from "next-redux-wrapper";
-import messageReducer from "./messageReducer";
-import Cookies from "js-cookie";
-const reducer = combineReducers({
-  user: userReducer,
-  messages: messageReducer,
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { HYDRATE, createWrapper } from "next-redux-wrapper";
+import user from "./userSlice";
+import conversations from "./conversationSlice";
+import messages from "./messagesSlice";
+const combinedReducer = combineReducers({
+  user,
+  conversations,
+  messages,
 });
 
-// create a makeStore function
-export const store = configureStore({ reducer });
+const masterReducer = (state, action) => {
+  if (action.type === HYDRATE) {
+    const nextState = {
+      ...state, // use previous state
 
-const makeStore = () => store;
+      user: action.payload.user,
+      conversations: action.payload.conversations,
+      messages: action.payload.messages,
+    };
+    return nextState;
+  } else {
+    return combinedReducer(state, action);
+  }
+};
 
-// export an assembled wrapper
+export const makeStore = () =>
+  configureStore({
+    reducer: masterReducer,
+  });
+
 export const wrapper = createWrapper(makeStore, { debug: false });

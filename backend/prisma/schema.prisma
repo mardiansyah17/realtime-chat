@@ -29,7 +29,7 @@ user_id_one String
 user_one User @relation("conversations_one",fields: [user_id_one],references: [id])
 user_id_two String
 user_two User @relation("conversations_two",fields: [user_id_two],references: [id])
-messages Message[]
+messages Message[] 
 @@map("conversations")
 }
 
@@ -48,6 +48,6 @@ model Message{
   updatedAt DateTime @updatedAt
   sender User @relation(fields: [sender_id],references: [id])
   conversation_id String
-  conversation Conversation @relation(fields: [conversation_id],references: [id])
+  conversation Conversation @relation(fields: [conversation_id],references: [id],onDelete: Cascade)
   @@map("messages")
 }

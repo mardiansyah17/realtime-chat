@@ -37,7 +37,7 @@ const ConversationItem = forwardRef((props, ref) => {
       });
   };
   return (
-    <div
+    <li
       ref={ref}
       onClick={getConversation}
       className="flex flex-col justify-between h-16 mb-3 border-b border-green-300 rounded-md rounded-b-none active:bg-green-100/50 active:bg-opacity-10"
@@ -50,7 +50,7 @@ const ConversationItem = forwardRef((props, ref) => {
         <span className="block">{conversation.lastMessage.content}</span>
         <span>12:00</span>
       </div>
-    </div>
+    </li>
   );
 });
 

@@ -1,6 +1,7 @@
 import { API_URL } from "@/contstant";
 import useModal from "@/hooks/useModal";
 import { setMessages } from "@/redux/messagesSlice";
+import generateRandomStr from "@/utils/generateRandomStr";
 import axios from "axios";
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +15,7 @@ export default function Modal({ token }) {
   const submitHandler = async (e) => {
     e.preventDefault();
     // return console.log(token);
-    const res = await axios
+    await axios
       .post(
         `${API_URL}/user/get-user`,
         { email },
@@ -27,7 +28,7 @@ export default function Modal({ token }) {
       .then((res) => {
         dispatch(
           setMessages({
-            conversationId: "1",
+            conversationId: generateRandomStr(),
             user: res.data,
             messages: [],
           })
@@ -44,7 +45,7 @@ export default function Modal({ token }) {
             <h1 onClick={() => console.log(tes)}>klikl</h1>
             <form
               onSubmit={submitHandler}
-              className="relative flex flex-col w-4/5 p-3 bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none "
+              className="relative flex flex-col w-4/5 sm:w-2/4 lg:w-2/6 p-3 bg-white border-0 rounded-lg shadow-lg outline-none focus:outline-none "
             >
               <div className="w-full p-1 mb-4">
                 <input

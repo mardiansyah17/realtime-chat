@@ -5,7 +5,6 @@ const prisma = require("../db");
  */
 exports.getUser = async (req, res) => {
   const { email } = req.body;
-  console.log(req.body);
   if (!email) return res.status(400).json({ msg: "Email tidak valid" });
   const user = await prisma.user.findUnique({
     where: {

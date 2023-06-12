@@ -9,13 +9,12 @@ const { errorHandler } = require("./middleware/auth");
 const initialSocket = require("./socketio");
 
 const http = require("http").Server(app);
-initialSocket(http);
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(morgan("dev"));
-
+initialSocket(http);
 app.use("/login", require("./routes/auth"));
 app.use("/api/conversation", require("./routes/conversation"));
 app.use("/api/user", require("./routes/user"));

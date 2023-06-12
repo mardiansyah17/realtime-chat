@@ -1,5 +1,6 @@
 const { Server } = require("socket.io");
 const prisma = require("../db");
+const { onReciveMessage } = require("../controllers/messagaController");
 
 /**
  * @param {import('http').Server} server
@@ -10,25 +11,57 @@ function initialSocket(server) {
       origin: "http://localhost:3000",
     },
   });
-
+  const rooms = {};
   socketIO.on("connection", (io) => {
     console.log(`⚡: ${io.id} user just connected!`);
-    //Listens and logs the message to the console
-    io.on("message", async (data) => {
-      const message = await prisma.message
-        .create({
-          data,
-        })
-        .catch((err) => console.log("ups", err));
-      socketIO.to(data.conversation_id).emit("reciveMessage", message);
+    console.log(io.handshake.auth);
+    io.on("message", (data) => onReciveMessage(data, socketIO));
+
+    io.on("joinUser", (userId) => {
+      console.log(`Pengguna ${userId} bergabung`);
+
+      // Bergabung dengan ruangan berdasarkan ID pengguna
+      io.join(userId);
+
+      // Tambahkan pengguna ke ruangan yang sesuai
+      if (rooms[userId]) {
+        rooms[userId].add(io.id);
+      } else {
+        rooms[userId] = new Set([io.id]);
+      }
     });
-    io.on("join", (conversationId) => {
-      io.join(conversationId);
-      console.log(`user ${io.id} join conversation ${conversationId}`);
+
+    io.on("userLeave", (userId) => {
+      console.log(`Pengguna ${userId} meninggalkan`);
+
+      // Hapus pengguna dari ruangan yang sesuai
+      if (rooms[userId]) {
+        rooms[userId].delete(io.id);
+
+        // Jika tidak ada pengguna lagi dalam ruangan, hapus ruangan
+        if (rooms[userId].size === 0) {
+          delete rooms[userId];
+        }
+      }
+
+      // Tinggalkan ruangan berdasarkan ID pengguna
+      io.leave(userId);
     });
 
     io.on("disconnect", () => {
-      console.log("🔥: A user disconnected");
+      console.log(`⚡: ${io.id} user disconnected!`);
+
+      // Hapus pengguna dari semua ruangan saat terputus
+      for (const roomId in rooms) {
+        if (rooms.hasOwnProperty(roomId)) {
+          if (rooms[roomId].has(io.id)) {
+            rooms[roomId].delete(io.id);
+            if (rooms[roomId].size === 0) {
+              delete rooms[roomId];
+            }
+          }
+        }
+      }
     });
   });
 }

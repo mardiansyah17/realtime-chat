@@ -4,9 +4,9 @@ const dataUser = require("../dataSeed/userData");
 const prisma = require("../db");
 
 async function main() {
-  await prisma.user.createMany({
-    data: dataUser,
-  });
+  // await prisma.user.createMany({
+  //   data: dataUser,
+  // });
   await prisma.conversation.createMany({
     data: conversations,
   });

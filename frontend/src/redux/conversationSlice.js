@@ -9,6 +9,9 @@ export const conversationSlice = createSlice({
         return [...state, ...action.payload];
       }
     },
+    addConversation: (state, action) => {
+      return [...state, action.payload];
+    },
     setLastMessage: (state, action) => {
       const { createdAt, content, conversationId } = action.payload;
       const updatedState = state.map((data) => {
@@ -32,5 +35,5 @@ export const conversationSlice = createSlice({
   },
 });
 
-export const { setConversations, setLastMessage } = conversationSlice.actions;
+export const { setConversations, setLastMessage, addConversation } = conversationSlice.actions;
 export default conversationSlice.reducer;

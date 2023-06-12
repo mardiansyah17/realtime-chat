@@ -30,7 +30,7 @@ export default function Sidebar({ token, socket }) {
           <HiPlus />
           <span>New chat</span>
         </div>
-        <FlipMove className=" h-[80%] p-3">
+        <FlipMove typeName="ul" className=" h-[80%] p-3" enterAnimation="accordionVertical">
           {conversations &&
             conversations.map((conversation) => {
               return (

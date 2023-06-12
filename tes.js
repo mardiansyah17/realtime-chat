@@ -1,54 +1,20 @@
-let state = [
+const x = [
   {
-    conversationId: "1",
+    conversationId: "7b5c75a6-6136-4459-b7c0-ff0db5ec06bb",
     lastMessage: {
-      createdAt: "2023-06-11T03:55:20.956Z",
-      content: "sdfsdf",
+      createdAt: "2023-06-12T04:44:02.558Z",
+      content: "woi",
     },
     user: {
       id: "2",
       name: "Mark Zuckerberg",
       email: "mardiansyahm12@gmail.com",
       picture: "https://example.com/pictures/jane_smith.jpg",
-      createdAt: "2023-06-08T13:30:16.041Z",
-      updatedAt: "2023-06-08T13:30:16.041Z",
-    },
-  },
-  {
-    conversationId: "2",
-    lastMessage: {
-      createdAt: "2023-06-11T03:55:16.049Z",
-      content: "hehe",
-    },
-    user: {
-      id: "3",
-      name: "Eren",
-      email: "eren@gmail.com",
-      picture: "https://example.com/pictures/jane_smith.jpg",
-      createdAt: "2023-06-08T13:30:16.041Z",
-      updatedAt: "2023-06-08T13:30:16.041Z",
+      createdAt: "2023-06-12T02:32:26.661Z",
+      updatedAt: "2023-06-12T02:32:26.661Z",
     },
   },
 ];
-const payload = {
-  createdAt: "2023-06-11T03:58:34.279Z",
-  content: "tes",
-  conversationId: "2",
-};
-const { createdAt, content, conversationId } = payload;
-const x = state.map((data) => {
-  if (data.conversationId == conversationId) {
-    data.lastMessage = { createdAt, content };
-  }
-  return data;
-});
-x.sort((a, b) => {
-  return a.lastMessage.createdAt > b.lastMessage.createdAt
-    ? -1
-    : a.lastMessage.createdAt < b.lastMessage.createdAt
-    ? 1
-    : 0;
-});
-state = x;
 
-console.log(state);
+const is = x.find((data) => data.conversationId == "7b5c75a6-6136-4459-b7c0-ff0db5ec06bb");
+console.log(is);

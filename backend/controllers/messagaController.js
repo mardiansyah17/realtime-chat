@@ -41,7 +41,9 @@ exports.onReciveMessage = async (data, socket) => {
           userTwo: res.user_two,
         };
       });
-    return socket.to([sender_id, reciver]).emit("reciveMessage", conversationRes);
+    return socket
+      .to([sender_id, reciver])
+      .emit("reciveMessage", { conversationRes, oldConversationId: data.conversation_id });
   }
   const messsage = await prisma.message
     .create({
@@ -56,22 +58,22 @@ exports.onReciveMessage = async (data, socket) => {
         content: true,
         createdAt: true,
         sender_id: true,
-        conversation: {
-          select: {
-            user_one: true,
-            user_two: true,
-          },
-        },
+        status: true,
+        updatedAt: true,
+        // conversation: {
+        //   select: {
+        //     user_one: true,
+        //     user_two: true,
+        //   },
+        // },
       },
     })
     .then((res) => {
       return {
         conversationId: res.conversation_id,
         lastMessage: res,
-        userOne: res.conversation.user_one,
-        userTwo: res.conversation.user_two,
       };
     });
   console.log(messsage);
-  return socket.to([sender_id, reciver]).emit("reciveMessage", messsage);
+  return socket.to([sender_id, reciver]).emit("reciveMessage", { conversationRes: messsage });
 };

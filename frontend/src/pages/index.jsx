@@ -1,4 +1,4 @@
-import { Inter } from "next/font/google";
+import { Allan, Inter } from "next/font/google";
 import HeaderMobile from "@/components/HeaderMobile";
 import Sidebar from "@/components/Sidebar";
 import { io } from "socket.io-client";
@@ -40,20 +40,21 @@ function Home({ token }) {
   const user = selector.user;
   const conversationIsOpen = selector.messages;
   const allConversation = selector.conversations;
-  const [message, setMessage] = useState("");
   const dispatch = useDispatch();
+  const [message, setMessage] = useState("");
   useEffect(() => {
     if (!socket.connected && user) {
       socket.connect();
-
       socket.emit("joinUser", user.id);
     }
-    socket.on("reciveMessage", (message) => {
-      const { conversationId, lastMessage, userOne, userTwo } = message;
 
-      const userTo = userOne.id == user.id ? userTwo : userOne;
+    const handleReceiveMessage = (data) => {
+      const { conversationId, lastMessage, userOne, userTwo } = data.conversationRes;
+
       const conversation = allConversation.find((data) => data.conversationId == conversationId);
       if (!conversation) {
+        const userTo = userOne.id == user.id ? userTwo : userOne;
+
         dispatch(
           addConversation({
             conversationId,
@@ -62,7 +63,7 @@ function Home({ token }) {
           })
         );
         console.log(conversationIsOpen);
-        if (conversationIsOpen.conversationId) {
+        if (conversationIsOpen.conversationId == data.oldConversationId) {
           dispatch(
             setMessages({
               conversationId,
@@ -73,26 +74,33 @@ function Home({ token }) {
         }
         return;
       }
+      if (conversationIsOpen.conversationId == conversationId) {
+        console.log(data.conversationRes);
+        dispatch(
+          addMessages({
+            id: lastMessage.id,
+            content: lastMessage.content,
+            status: lastMessage.status,
+            sender_id: lastMessage.sender_id,
+            createdAt: lastMessage.createdAt,
+            conversation_id: lastMessage.conversation_id,
+          })
+        );
+      }
+      dispatch(setLastMessage(lastMessage));
+    };
 
-      dispatch(
-        setLastMessage({
-          createdAt: lastMessage.createdAt,
-          content: lastMessage.content,
-          conversationId,
-        })
-      );
-      dispatch(addMessages(lastMessage));
-    });
+    socket.on("reciveMessage", handleReceiveMessage);
 
     return () => {
       socket.emit("userLeave", user.id);
       socket.disconnect();
+      socket.off("reciveMessage", handleReceiveMessage);
     };
-  }, []);
+  }, [conversationIsOpen, allConversation]);
 
   const handleMsg = async (e) => {
     e.preventDefault();
-    console.log(conversationIsOpen.conversationId);
     socket.emit("message", {
       content: message,
       sender_id: user.id,
@@ -105,6 +113,7 @@ function Home({ token }) {
     <div className={`${inter.className} md:flex md:w-full h-screen max-h-screen overflow-hidden`}>
       <Modal token={token} />
       <Sidebar socket={socket} token={token} />
+      <h1 onClick={() => console.log(selector.messages)}>tes</h1>
       <div className="w-full h-full">
         <HeaderMobile />
         {user && conversationIsOpen.conversationId ? (

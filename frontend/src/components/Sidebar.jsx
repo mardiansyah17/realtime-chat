@@ -18,9 +18,9 @@ export default function Sidebar({ token, socket }) {
   const conversations = selector.conversations;
   return (
     <div
-      className={`z-10 flex top-0 h-screen md:relative  fixed ease-in-out duration-500 ${
-        isOpen ? "translate-x-0 " : "-translate-x-full md:translate-x-0"
-      }  w-full md:w-fit `}
+      className={`z-10 flex top-0 h-screen sm:relative  fixed ease-in-out duration-500 ${
+        isOpen ? "translate-x-0 " : "-translate-x-full sm:translate-x-0"
+      }  w-full sm:w-fit `}
     >
       <div className={`  w-80 h-full   bg-white border-r border-gray-300 `}>
         <div

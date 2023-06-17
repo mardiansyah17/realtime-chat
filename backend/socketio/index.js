@@ -16,6 +16,7 @@ function initialSocket(server) {
     console.log(`⚡: ${io.id} user just connected!`);
     console.log(io.handshake.auth);
     io.on("message", (data) => onReciveMessage(data, socketIO));
+    // io.on("message", (data) => onReciveMessage(data, socketIO));
 
     io.on("joinUser", (userId) => {
       console.log(`Pengguna ${userId} bergabung`);

@@ -13,12 +13,13 @@ export const conversationSlice = createSlice({
       return [...state, action.payload];
     },
     setLastMessage: (state, action) => {
-      const { createdAt, content, conversationId } = action.payload;
+      const lastMessage = action.payload;
+      console.log(action.payload);
       const updatedState = state.map((data) => {
-        if (data.conversationId === conversationId) {
+        if (data.conversationId === lastMessage.conversation_id) {
           return {
             ...data,
-            lastMessage: { createdAt, content },
+            lastMessage: { createdAt: lastMessage.createdAt, content: lastMessage.content },
           };
         }
         return data;

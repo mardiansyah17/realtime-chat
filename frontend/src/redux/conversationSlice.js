@@ -10,11 +10,18 @@ export const conversationSlice = createSlice({
       }
     },
     addConversation: (state, action) => {
-      return [...state, action.payload];
+      const updatedState = [...state, action.payload];
+      updatedState.sort((a, b) => {
+        return a.lastMessage.createdAt > b.lastMessage.createdAt
+          ? -1
+          : a.lastMessage.createdAt < b.lastMessage.createdAt
+          ? 1
+          : 0;
+      });
+      return updatedState;
     },
     setLastMessage: (state, action) => {
       const lastMessage = action.payload;
-      console.log(action.payload);
       const updatedState = state.map((data) => {
         if (data.conversationId === lastMessage.conversation_id) {
           return {

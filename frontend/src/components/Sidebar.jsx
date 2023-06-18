@@ -74,7 +74,7 @@ export default function Sidebar({ token, socket }) {
           )}
         </div>
       </div>
-      <HiXMark className="mt-2 ml-4 md:hidden" onClick={() => onClose()} size={30} />
+      <HiXMark className="mt-2 ml-4 sm:hidden" onClick={() => onClose()} size={30} />
     </div>
   );
 }

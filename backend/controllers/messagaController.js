@@ -74,6 +74,5 @@ exports.onReciveMessage = async (data, socket) => {
         lastMessage: res,
       };
     });
-  console.log(messsage);
   return socket.to([sender_id, reciver]).emit("reciveMessage", { conversationRes: messsage });
 };

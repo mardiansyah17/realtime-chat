@@ -62,12 +62,11 @@ function Home({ token }) {
             user: userTo,
           })
         );
-        console.log(conversationIsOpen);
         if (conversationIsOpen.conversationId == data.oldConversationId) {
           dispatch(
             setMessages({
               conversationId,
-              user,
+              user: userTo,
               messages: lastMessage,
             })
           );
@@ -75,7 +74,6 @@ function Home({ token }) {
         return;
       }
       if (conversationIsOpen.conversationId == conversationId) {
-        console.log(data.conversationRes);
         dispatch(
           addMessages({
             id: lastMessage.id,
@@ -110,10 +108,9 @@ function Home({ token }) {
     setMessage("");
   };
   return (
-    <div className={`${inter.className} md:flex md:w-full h-screen max-h-screen overflow-hidden`}>
+    <div className={`${inter.className} sm:flex sm:w-full h-screen max-h-screen overflow-hidden`}>
       <Modal token={token} />
       <Sidebar socket={socket} token={token} />
-      <h1 onClick={() => console.log(selector.messages)}>tes</h1>
       <div className="w-full h-full">
         <HeaderMobile />
         {user && conversationIsOpen.conversationId ? (

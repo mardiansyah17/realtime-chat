@@ -96,3 +96,21 @@ exports.getConversation = async (req, res) => {
   });
   return res.json(messages);
 };
+
+exports.deleteConversation = async  (req,res)=>{
+try {
+  const conversationId = req.params.id
+  await  prisma.conversation.delete({
+    where:{
+      id:conversationId
+    }
+  })
+  return res.status(200).json({
+    data:{
+      message:"Percakapan berhasil di hapus"
+    }
+  })
+}catch (e) {
+return  res.status(500).json({errors:e})
+}
+}

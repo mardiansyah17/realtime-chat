@@ -15,6 +15,7 @@ app.use(cookieParser());
 app.use(cors({ origin: process.env.CLIENT_URL }));
 app.use(morgan("dev"));
 initialSocket(http);
+app.use("/api", require("./routes/index"));
 app.use("/login", require("./routes/auth"));
 app.use("/api/conversation", require("./routes/conversation"));
 app.use("/api/user", require("./routes/user"));

@@ -8,29 +8,31 @@ datasource db {
 }
 
 model User {
-  id          String           @id  @default(uuid())
-  name        String        @db.VarChar(50)
-  email       String        @unique @db.VarChar(70)
-  picture     String        @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                String         @id @default(uuid())
+  name              String         @db.VarChar(50)
+  email             String         @unique @db.VarChar(70)
+  picture           String         @db.VarChar(255)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
   conversations_one Conversation[] @relation("conversations_one")
   conversations_two Conversation[] @relation("conversations_two")
-messages Message[]
-  
+  messages          Message[]
+
   @@map("users")
 }
 
-model Conversation{
-  id String @id @default(uuid())
-    createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-user_id_one String
-user_one User @relation("conversations_one",fields: [user_id_one],references: [id])
-user_id_two String
-user_two User @relation("conversations_two",fields: [user_id_two],references: [id])
-messages Message[] 
-@@map("conversations")
+model Conversation {
+  id          String    @id @default(uuid())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user_id_one String
+  user_one    User      @relation("conversations_one", fields: [user_id_one], references: [id])
+  user_id_two String
+  user_two    User      @relation("conversations_two", fields: [user_id_two], references: [id])
+  messages    Message[]
+  is_delete   String?
+
+  @@map("conversations")
 }
 
 enum Status {
@@ -39,15 +41,17 @@ enum Status {
   not_sent
 }
 
-model Message{
-  id String @id @default(uuid())
-  content String @db.Text()
-  status Status @default(not_sent)
-  sender_id String
-    createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  sender User @relation(fields: [sender_id],references: [id])
+model Message {
+  id              String       @id @default(uuid())
+  content         String       @db.Text()
+  status          Status       @default(not_sent)
+  sender_id       String
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+  sender          User         @relation(fields: [sender_id], references: [id])
   conversation_id String
-  conversation Conversation @relation(fields: [conversation_id],references: [id],onDelete: Cascade)
+  conversation    Conversation @relation(fields: [conversation_id], references: [id], onDelete: Cascade)
+  is_delete       String?
+
   @@map("messages")
 }

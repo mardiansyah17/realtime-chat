@@ -52,13 +52,13 @@ const ConversationItem = forwardRef((props, ref) => {
             >
                 <div className="flex items-center justify-between">
                     <span className="font-medium">{conversation.user.name}</span>
-                    {/*<div onClick={(e) => {*/}
-                    {/*    e.stopPropagation()*/}
-                    {/*    modalConfirmDelete.onOpen()*/}
-                    {/*}} className={` p-2 absolute right-0`}>*/}
-                    {/*    <BiTrash className={``} size={20}/>*/}
+                    <div onClick={(e) => {
+                        e.stopPropagation()
+                        modalConfirmDelete.onOpen()
+                    }} className={` p-2 absolute right-0`}>
+                        <BiTrash className={``} size={20}/>
 
-                    {/*</div>*/}
+                    </div>
                 </div>
                 <div className="flex items-center justify-between">
                     <span className="block">{conversation.lastMessage.content}</span>

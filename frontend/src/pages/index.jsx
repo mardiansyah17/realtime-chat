@@ -29,6 +29,7 @@ export const getServerSideProps = wrapper.getServerSideProps((store) => async ({
             })
             .then((res) => res.data.conversations)
         : null;
+    console.log(conversations)
     store.dispatch(setConversations(conversations));
     return {
         props: {
@@ -115,7 +116,7 @@ function Home({token}) {
     return (
         <div className={`${inter.className} sm:flex sm:w-full h-screen max-h-screen overflow-hidden`}>
             <ModalNewConversation token={token}/>
-           
+
             <Sidebar socket={socket} token={token}/>
             <div className="w-full h-full">
                 <HeaderMobile/>

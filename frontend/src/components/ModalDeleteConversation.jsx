@@ -20,7 +20,7 @@ export default function ModalDeleteConversation({token, conversationId}) {
                 Authorization: `Bearer ${token}`,
             },
         }).then((res) => {
-            console.log(conversationId)
+            return console.log(res.data)
             dispatch(deleteConversationSlice({
                 conversationId
             }))
